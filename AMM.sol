@@ -52,6 +52,8 @@ contract AMM is AccessControl{
 		sellAmount(A) = balance(tokenA) - ((balance(tokenB) + sellAmount(B)) / invariant) if sellToken = tokenB 
 	*/
 	function tradeTokens( address sellToken, uint256 sellAmount ) public {
+		uint256 qtyA;
+		uint256 qtyB;
 		qtyA = ERC20(tokenA).balanceOf(address(this));
 		qtyB = ERC20(tokenB).balanceOf(address(this));
 		invariant = qtyA * qtyB;
@@ -60,8 +62,6 @@ contract AMM is AccessControl{
 		require( sellToken == tokenA || sellToken == tokenB, 'Invalid token' );
 		require( sellAmount > 0, 'Cannot trade 0' );
 		require( invariant > 0, 'No liquidity' );
-		uint256 qtyA;
-		uint256 qtyB;
 		uint256 swapAmt;
 
 		//YOUR CODE HERE 
