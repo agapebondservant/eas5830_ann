@@ -46,6 +46,10 @@ contract AMM is AccessControl{
 		User provides sellToken and sellAmount
 
 		The contract must calculate buyAmount using the formula:
+		invariant = balance(tokenA) + sellAmount(A) / balance(tokenB) - sellAmount(B) =>
+		sellAmount(B) = balance(tokenB) - ((balance(tokenA) + sellAmount(A)) / invariant) if sellToken = tokenA 
+		invariant = balance(tokenB) + sellAmount / balance(tokenA) - sellAmount if sellToken = tokenB =>
+		sellAmount(A) = balance(tokenA) - ((balance(tokenB) + sellAmount(B)) / invariant) if sellToken = tokenB 
 	*/
 	function tradeTokens( address sellToken, uint256 sellAmount ) public {
 		require( invariant > 0, 'Invariant must be nonzero' );
@@ -57,6 +61,20 @@ contract AMM is AccessControl{
 		uint256 swapAmt;
 
 		//YOUR CODE HERE 
+		if( getTokenAddress(sellToken) == tokenA){
+			qtyA = ((1000 - feebps)/1000)) * sellAmount;
+			qtyB = ERC20(tokenB).balanceOf(address(this));
+			swapAmt = qtyB - ((qtyA + sellAmount) / invariant);
+			ERC20(tokenA).transferFrom(msg.sender, address(this), qtyA);
+			ERC20(tokenB).transfer(msg.sender, swapAmt);
+
+		} else {
+			qtyB = ((1000 - feebps)/1000)) * sellAmount;
+			qtyA = ERC20(tokenA).balanceOf(address(this));
+			swapAmt = qtyA - ((qtyB + sellAmount) / invariant);
+			ERC20(tokenB).transferFrom(msg.sender, address(this), qtyA);
+			ERC20(tokenA).transfer(msg.sender, swapAmt);
+		}
 
 		uint256 new_invariant = ERC20(tokenA).balanceOf(address(this))*ERC20(tokenB).balanceOf(address(this));
 		require( new_invariant >= invariant, 'Bad trade' );
@@ -69,6 +87,12 @@ contract AMM is AccessControl{
 	function provideLiquidity( uint256 amtA, uint256 amtB ) public {
 		require( amtA > 0 || amtB > 0, 'Cannot provide 0 liquidity' );
 		//YOUR CODE HERE
+		if( amtA > 0 ) {
+			ERC20(tokenA).transferFrom(msg.sender, address(this), amtA);
+		}
+		if( amtB > 0 ) {
+			ERC20(tokenB).transferFrom(msg.sender, address(this), amtB);
+		}
 		emit LiquidityProvision( msg.sender, amtA, amtB );
 	}
 
