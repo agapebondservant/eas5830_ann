@@ -46,10 +46,6 @@ contract AMM is AccessControl{
 		User provides sellToken and sellAmount
 
 		The contract must calculate buyAmount using the formula:
-		invariant = balance(tokenA) + sellAmount(A) / balance(tokenB) - sellAmount(B) =>
-		sellAmount(B) = balance(tokenB) - ((balance(tokenA) + sellAmount(A)) / invariant) if sellToken = tokenA 
-		invariant = balance(tokenB) + sellAmount / balance(tokenA) - sellAmount if sellToken = tokenB =>
-		sellAmount(A) = balance(tokenA) - ((balance(tokenB) + sellAmount(B)) / invariant) if sellToken = tokenB 
 	*/
 	function tradeTokens( address sellToken, uint256 sellAmount ) public {
 		uint256 qtyA = ERC20(tokenA).balanceOf(address(this));
