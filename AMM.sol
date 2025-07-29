@@ -48,7 +48,7 @@ contract AMM is AccessControl{
 		The contract must calculate buyAmount using the formula:
 	*/
 	function tradeTokens( address sellToken, uint256 sellAmount ) public {
-		//require( invariant > 0, 'Invariant must be nonzero' );
+		/*//require( invariant > 0, 'Invariant must be nonzero' );
 		require( sellToken == tokenA || sellToken == tokenB, 'Invalid token' );
 		require( sellAmount > 0, 'Cannot trade 0' );
 		//require( invariant > 0, 'No liquidity' );
@@ -70,17 +70,18 @@ contract AMM is AccessControl{
 		reserveOut = reserveOut / (reserveIn * 1000 + reserveInActualWithFee);
 		//reserveOutput = reserveOut / (reserveIn + reserveInActualWithFee) * 1000;
 
-		ERC20(tokenOut).transfer(msg.sender, reserveOut);
+		ERC20(tokenOut).transfer(msg.sender, reserveOut);*/
 
 
 		//YOUR CODE HERE 
-		/*
+		
 		if( sellToken == tokenA ){
 			ERC20(tokenA).transferFrom(msg.sender, address(this), sellAmount);
 			uint256 sellAmountWithFee = sellAmount * (10000 - feebps)/10000;
 			//swapAmt = qtyB - (invariant / (sellAmountWithFee + qtyA));
 			swapAmt = (qtyB * sellAmountWithFee) / (qtyA + sellAmountWithFee);
 			ERC20(tokenB).transfer(msg.sender, swapAmt);
+			emit Swap( tokenA, tokenB, sellAmount, swapAmt );
 
 		} else {
 			ERC20(tokenB).transferFrom(msg.sender, address(this), sellAmount);
@@ -88,13 +89,14 @@ contract AMM is AccessControl{
 			//swapAmt = qtyA - (invariant / (sellAmountWithFee + qtyB));
 			swapAmt = (qtyA * sellAmountWithFee) / (qtyB + sellAmountWithFee) ;
 			ERC20(tokenA).transfer(msg.sender, swapAmt);
-		}*/
+			emit Swap( tokenB, tokenA, sellAmount, swapAmt );
+		}
 
 		uint256 new_invariant = ERC20(tokenA).balanceOf(address(this))*ERC20(tokenB).balanceOf(address(this));
 		require( new_invariant >= invariant, 'Bad trade' );
 		invariant = new_invariant;
 
-		emit Swap( tokenIn, tokenOut, sellAmount, reserveOut );
+		//emit Swap( tokenIn, tokenOut, sellAmount, reserveOut );
 	}
 
 	/*
