@@ -66,9 +66,9 @@ contract AMM is AccessControl{
 		uint256 reserveInUpdated = ERC20(tokenIn).balanceOf(address(this));
 		uint256 reserveInActual = reserveInUpdated - reserveIn;
 		uint256 reserveInActualWithFee = reserveInActual * (1000 - feebps); // /1000;
-		uint256 reserveOutput = reserveOutput * reserveInActualWithFee;
-		reserveOutput = reserveOutput / (reserveInput * 1000 + reserveInActualWithFee);
-		//reserveOutput = reserveOutput / (reserveInput + reserveInActualWithFee) * 1000;
+		uint256 reserveOut = reserveOut * reserveInActualWithFee;
+		reserveOutput = reserveOut / (reserveIn * 1000 + reserveInActualWithFee);
+		//reserveOutput = reserveOut / (reserveIn + reserveInActualWithFee) * 1000;
 
 		ERC20(tokenOut).transfer(msg.sender, reserveOut);
 
