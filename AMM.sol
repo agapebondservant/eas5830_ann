@@ -48,10 +48,10 @@ contract AMM is AccessControl{
 		The contract must calculate buyAmount using the formula:
 	*/
 	function tradeTokens( address sellToken, uint256 sellAmount ) public {
-		require( invariant > 0, 'Invariant must be nonzero' );
+		//require( invariant > 0, 'Invariant must be nonzero' );
 		require( sellToken == tokenA || sellToken == tokenB, 'Invalid token' );
 		require( sellAmount > 0, 'Cannot trade 0' );
-		require( invariant > 0, 'No liquidity' );
+		//require( invariant > 0, 'No liquidity' );
 		address tokenIn = sellToken;
 		address tokenOut = (sellToken == tokenA) ? tokenB : tokenA;
 		uint256 swapAmt;
@@ -65,7 +65,7 @@ contract AMM is AccessControl{
 
 		uint256 reserveInUpdated = ERC20(tokenIn).balanceOf(address(this));
 		uint256 reserveInActual = reserveInUpdated - reserveIn;
-		uint256 reserveInActualWithFee = reserveInActual * (1000 - feebps); // /1000;
+		uint256 reserveInActualWithFee = reserveInActual * (1000 - feebps);
 		reserveOut = reserveOut * reserveInActualWithFee;
 		reserveOut = reserveOut / (reserveIn * 1000 + reserveInActualWithFee);
 
