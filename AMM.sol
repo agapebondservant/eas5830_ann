@@ -54,7 +54,6 @@ contract AMM is AccessControl{
 		require( invariant > 0, 'No liquidity' );
 		address tokenIn = sellToken;
 		address tokenOut = (sellToken == tokenA) ? tokenB : tokenA;
-		invariant = qtyA * qtyB;
 		uint256 swapAmt;
 
 		//YOUR CODE HERE 
